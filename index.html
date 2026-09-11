@@ -219,6 +219,12 @@ section{padding:120px 28px; position:relative;}
 .term-body{padding:22px 20px; font-family:var(--font-mono); font-size:.86rem; min-height:230px;}
 .term-body .prompt{color:var(--cyan);}
 .term-line{color:var(--text-muted); white-space:pre-wrap;}
+.term-code{white-space:pre; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:8px;}
+.term-code::-webkit-scrollbar{height:5px;}
+.term-code::-webkit-scrollbar-thumb{background:var(--border-bright); border-radius:4px;}
+@media(max-width:480px){
+  .term-body{font-size:.76rem; padding:18px 16px;}
+}
 .kw{color:var(--magenta);} .str{color:var(--amber);} .fn{color:var(--violet-bright);}
 .term-out{margin-top:14px; border-top:1px dashed var(--border); padding-top:14px; opacity:0;}
 .term-out.show{opacity:1; animation:fadeUp .5s var(--ease) forwards;}
@@ -451,7 +457,7 @@ footer p{color:var(--text-dim); font-size:.82rem; font-family:var(--font-mono);}
         <span class="term-title">about_me.py</span>
       </div>
       <div class="term-body">
-<div class="term-line"><span class="kw">class</span> <span class="fn">Developer</span>:
+<div class="term-line term-code"><span class="kw">class</span> <span class="fn">Developer</span>:
     <span class="kw">def</span> <span class="fn">__init__</span>(self):
         self.name = <span class="str">"Raudiyah Iman"</span>
         self.role = <span class="str">"Software Engineer"</span>
@@ -745,13 +751,25 @@ navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>navLin
 
 const sections = document.querySelectorAll('section[id]');
 const navA = document.querySelectorAll('.nav-links a');
+
+/* Hide back-to-top button while the contact section is in view so it
+   doesn't float on top of the form fields on mobile */
+let contactInView = false;
+const contactSection = document.getElementById('contact');
+if(contactSection){
+  const contactIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e => contactInView = e.isIntersecting);
+  }, {threshold:.05});
+  contactIO.observe(contactSection);
+}
+
 window.addEventListener('scroll', ()=>{
   let current = '';
   sections.forEach(s=>{ if(window.scrollY >= s.offsetTop - 140) current = s.id; });
   navA.forEach(a=>{
     a.classList.toggle('active', a.getAttribute('href') === '#' + current);
   });
-  document.getElementById('backTop').classList.toggle('show', window.scrollY > 600);
+  document.getElementById('backTop').classList.toggle('show', window.scrollY > 600 && !contactInView);
 });
 
 /* 7) BACK TO TOP */
